@@ -66,6 +66,7 @@ class Cosmo(MakefilePackage):
     conflicts('+serialize', when='+parallel')
     # previous versions contain a bug affecting serialization
     conflicts('+serialize', when='@:5.07.mch1.0.p3')
+    conflicts('+cppdycore', when='%pgi cosmo_target=cpu')
     build_directory = 'cosmo/ACC'
 
     def setup_environment(self, spack_env, run_env):
