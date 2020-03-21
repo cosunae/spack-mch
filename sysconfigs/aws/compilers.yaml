@@ -1,0 +1,30 @@
+compilers::
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules:
+    - /scratch/modules/pgi/19.10
+    operating_system: ubuntu18.04
+    modules: []
+    paths:
+      cc: /scratch/opt/pgi/linux86-64-llvm/19.10/bin/pgcc
+      cxx: /scratch/opt/pgi/linux86-64-llvm/19.10/bin/pgc++
+      f77: /scratch/opt/pgi/linux86-64-llvm/19.10/bin/pgfortran
+      fc: /scratch/opt/pgi/linux86-64-nollvm/19.10/bin/pgfortran
+    spec: pgi@19.10
+    target: any
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    operating_system: ubuntu18.04
+    modules: 
+    - /scratch/modules/gcc/8.3.0
+    paths:
+      cc: /usr/bin/gcc-8
+      cxx: /usr/bin/g++-8
+      f77: /usr/bin/gfortran-8
+      fc: /usr/bin/gfortran-8
+    spec: gcc@8.3.0
+    target: any

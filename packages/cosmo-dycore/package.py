@@ -41,8 +41,8 @@ class CosmoDycore(CMakePackage):
     variant('slave', default='tsa', description='Build on slave tsa or daint', multi=False)
     variant('data_path', default='.', description='Serialization data path', multi=False)
     
-    depends_on('gridtools@1.1.3 cosmo_target=gpu', when='cosmo_target=gpu')
-    depends_on('gridtools@1.1.3 cosmo_target=cpu', when='cosmo_target=cpu')
+    depends_on('gridtools@1.1.3 cosmo_target=gpu ~build_testing ~install_examples', when='cosmo_target=gpu')
+    depends_on('gridtools@1.1.3 cosmo_target=cpu ~build_testing ~install_examples', when='cosmo_target=cpu')
     depends_on('boost@1.67.0')
     depends_on('serialbox@2.6.0', when='+build_tests')
     depends_on('mpi', type=('build', 'run'))

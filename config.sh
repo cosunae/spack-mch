@@ -29,7 +29,7 @@ fi
 
 if [[ ! -d "${install_dir}/spack" ]]; then
     echo "Cloning spack instance to:" $install_dir
-    git clone git@github.com:spack/spack.git -b $version $install_dir/spack
+    git clone https://github.com/spack/spack.git -b $version $install_dir/spack
 fi
 
 echo "Installing mch packages on $install_dir/spack/etc/repos.yaml"
