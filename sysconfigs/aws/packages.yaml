@@ -12,7 +12,7 @@ packages:
     #paths: {}
   cuda:
     modules:
-      cuda@10.2: /scratch/modules/cuda/10.2
+      cuda@10.2: /software/modules/cuda/10.2
     buildable: true
     version: []
     target: []
@@ -49,7 +49,7 @@ packages:
     modules:
       slurm@19.05.04: slurm/19.05.04
   cosmo-dycore:
-    variants: cuda_arch=sm_70 data_path=/scratch/data/cosmo/ slave=aws
+    variants: cuda_arch=sm_70 data_path=/software/data/cosmo/ slave=aws
     compiler: [gcc]
   gridtools:
     variants: cuda_arch=sm_70
