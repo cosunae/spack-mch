@@ -47,7 +47,7 @@ class Cosmo(MakefilePackage):
     depends_on('cosmo-eccodes-definitions@2.14.1.2', when='+eccodes')
     depends_on('perl@5.16.3:')
     depends_on('omni-xmod-pool')
-    depends_on('claw', when='+claw')
+    depends_on('claw@ivyfix', when='+claw')
     depends_on('boost', when='cosmo_target=gpu ~cppdycore')
 
     variant('cppdycore', default=True, description='Build with the C++ DyCore')
