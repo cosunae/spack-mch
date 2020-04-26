@@ -49,6 +49,7 @@ class Cosmo(MakefilePackage):
     depends_on('omni-xmod-pool')
     depends_on('claw@ivyfix', when='+claw')
     depends_on('boost', when='cosmo_target=gpu ~cppdycore')
+    depends_on('fcloudruption')
 
     variant('cppdycore', default=True, description='Build with the C++ DyCore')
     variant('serialize', default=False, description='Build with serialization enabled')
