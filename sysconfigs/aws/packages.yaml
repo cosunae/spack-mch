@@ -17,6 +17,9 @@ packages:
     version: []
     target: []
     providers: {}
+  openssl:
+    paths:
+      openssl@1.1.1: /usr
   openmpi:
     paths:
       openmpi@4.0.2%pgi: /software/openmpi/
