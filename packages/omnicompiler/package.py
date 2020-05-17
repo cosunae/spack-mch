@@ -40,7 +40,7 @@ class Omnicompiler(AutotoolsPackage):
     variant('mod2xmod', default=False, description="Build T_Module which can transform .mod files to .xmod files.")
     # FIXME: Add dependencies if required.
     depends_on('libxml2')
-    depends_on('m4')
+    depends_on('m4%gcc')
     depends_on('autoconf')
     depends_on('automake')
     depends_on('libtool')
@@ -57,6 +57,7 @@ class Omnicompiler(AutotoolsPackage):
             '--with-gmp=/usr/..',
             '--with-mpfr-include={0}'.format(self.spec['mpfr'].prefix + '/include'),
             '--with-mpfr-lib={0}'.format(self.spec['mpfr'].prefix + '/lib'),
+            '--with-libxml2={0}'.format(spec['libxml2'].prefix),
             ]
 
         return args

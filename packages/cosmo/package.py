@@ -11,13 +11,14 @@ class Cosmo(MakefilePackage):
     """COSMO: Numerical Weather Prediction Model. Needs access to private GitHub."""
 
     homepage = "http://www.cosmo-model.org"
-    url      = "https://github.com/COSMO-ORG/cosmo/archive/5.06.tar.gz" 
+    url      = "https://github.com/MeteoSwiss-APN/cosmo/archive/5.07.mch1.0.p5.tar.gz"
     git      = 'git@github.com:COSMO-ORG/cosmo.git'
     maintainers = ['elsagermann']
 
     version('master', branch='master')
     version('mch', git='git@github.com:MeteoSwiss-APN/cosmo.git', branch='mch')
     version('aws_5.07.mch1.0.p4', git='git@github.com:cosunae/cosmo.git', branch='aws_5.07.mch1.0.p4')
+    version('5.07.mch1.0.p5', git='git@github.com:MeteoSwiss-APN/cosmo.git', tag='5.07.mch1.0.p5')
     version('5.07.mch1.0.p4', git='git@github.com:MeteoSwiss-APN/cosmo.git', tag='5.07.mch1.0.p4')
     version('5.07.mch1.0.p3', git='git@github.com:MeteoSwiss-APN/cosmo.git', tag='5.07.mch1.0.p3')
     version('5.07.mch1.0.p2', git='git@github.com:MeteoSwiss-APN/cosmo.git', tag='5.07.mch1.0.p2')
@@ -25,8 +26,9 @@ class Cosmo(MakefilePackage):
     version('5.05',  tag='5.05')
     version('5.06', tag='5.06')
     
-    patch('patches/5.07.mch1.0.p2/patch.Makefile', when='@5.07.mch1.0.p2')
     patch('patches/5.07.mch1.0.p4/patch.Makefile', when='@5.07.mch1.0.p4')
+    patch('patches/5.07.mch1.0.p4/patch.Makefile', when='@5.07.mch1.0.p5')
+
 
     depends_on('netcdf-fortran~mpi')
     depends_on('netcdf-c~mpi')
@@ -39,17 +41,15 @@ class Cosmo(MakefilePackage):
     depends_on('cosmo-dycore%gcc real_type=double', when='real_type=double +cppdycore')
     depends_on('cosmo-dycore%gcc +production', when='+production +cppdycore')
 
-    depends_on('serialbox@2.6.0%pgi@19.9-gcc', when='%pgi@19.9 +serialize')
-    depends_on('serialbox@2.6.0%pgi@19.7.0-gcc', when='%pgi@19.7.0 +serialize')
-    depends_on('serialbox@2.6.0', when='%gcc +serialize')
+    depends_on('serialbox@2.6.0', when='+serialize')
     depends_on('mpi', type=('build', 'run'))
     depends_on('libgrib1')
-    depends_on('jasper@1.900.1%gcc')
+    depends_on('jasper@1.900.1%gcc ~shared')
     depends_on('cosmo-grib-api-definitions', when='~eccodes')
-    depends_on('cosmo-eccodes-definitions@2.14.1.2', when='+eccodes')
+    depends_on('cosmo-eccodes-definitions@2.14.1.2 ~aec', when='+eccodes')
     depends_on('perl@5.16.3:')
-    depends_on('omni-xmod-pool')
-    depends_on('claw@ivyfix', when='+claw')
+    depends_on('omni-xmod-pool', when='+claw')
+    depends_on('claw', when='+claw')
     depends_on('boost', when='cosmo_target=gpu ~cppdycore')
     depends_on('fcloudruption')
 
@@ -63,6 +63,13 @@ class Cosmo(MakefilePackage):
     variant('slave', default='tsa', description='Build on slave tsa or daint', multi=False)
     variant('eccodes', default=False, description='Build with eccodes instead of grib-api')
     variant('pollen', default=False, description='Build with pollen enabled')
+    variant('verbose', default=False, description='Build cosmo with verbose enabled')
+
+    conflicts('+claw', when='cosmo_target=cpu')
+    conflicts('+pollen', when='@5.05:5.06,master')
+    conflicts('+serialize', when='+parallel')
+    # previous versions contain a bug affecting serialization
+    conflicts('+serialize', when='@5.07.mch1.0.p2:5.07.mch1.0.p3')
     variant('production', default=False, description='Force all variants to be the ones used in production')
     
     conflicts('+production', when='~cppdycore')
@@ -71,12 +78,8 @@ class Cosmo(MakefilePackage):
     conflicts('+production', when='~claw')
     conflicts('+production', when='~parallel')
     conflicts('+production', when='cosmo_target=cpu')
-
-    conflicts('+pollen', when='@5.05:5.06,master')
-#    conflicts('+pollen', when='git=git@github.com:MeteoSwiss-APN/cosmo.git')
-    conflicts('+serialize', when='+parallel')
-    # previous versions contain a bug affecting serialization
-    conflicts('+serialize', when='@:5.07.mch1.0.p3')
+    conflicts('+production', when='~pollen')
+    conflicts('+production', when='%gcc')
     conflicts('+cppdycore', when='%pgi cosmo_target=cpu')
     build_directory = 'cosmo/ACC'
 
@@ -93,7 +96,7 @@ class Cosmo(MakefilePackage):
           eccodes_samples_path = self.spec['cosmo-eccodes-definitions'].prefix + '/cosmoDefinitions/samples/'
           spack_env.set('GRIB_SAMPLES_PATH', eccodes_samples_path)
           spack_env.set('GRIBAPI_DIR', self.spec['eccodes'].prefix)
-        spack_env.set('GRIB1_DIR', self.spec['libgrib1'].prefix)
+        spack_env.set('GRIB1_DIR', self.spec['libgrib1'].prefix + '/lib')
         spack_env.set('JASPER_DIR', self.spec['jasper'].prefix)
         spack_env.set('MPI_ROOT', self.spec['mpi'].prefix)
         if self.spec.variants['cosmo_target'].value == 'gpu' or '+serialize' in self.spec:
@@ -109,6 +112,8 @@ class Cosmo(MakefilePackage):
             spack_env.set('CLAWDIR', self.spec['claw'].prefix)
             spack_env.set('CLAWFC', self.spec['claw'].prefix + '/bin/clawfc')
             spack_env.set('CLAWXMODSPOOL', self.spec['omni-xmod-pool'].prefix + '/omniXmodPool/')
+            if self.spec['mpi'].name == 'mpich':
+                spack_env.append_flags('CLAWFC_FLAGS', '-U__CRAYXC')
         spack_env.set('UCX_MEMTYPE_CACHE', 'n')
         if '+cppdycore' in self.spec and self.spec.variants['cosmo_target'].value == 'gpu':
           spack_env.set('UCX_TLS', 'rc_x,ud_x,mm,shm,cuda_copy,cuda_ipc,cma')
@@ -118,7 +123,7 @@ class Cosmo(MakefilePackage):
     @property
     def build_targets(self):
         build = []
-        if self.spec.variants['pollen']:
+        if self.spec.variants['pollen'].value:
             build.append('POLLEN=1')
         if self.spec.variants['real_type'].value == 'float':
             build.append('SINGLEPRECISION=1')
@@ -128,6 +133,8 @@ class Cosmo(MakefilePackage):
             build.append('CLAW=1')
         if '+serialize' in self.spec:
             build.append('SERIALIZE=1')
+        if self.spec.variants['verbose'].value:
+            build.append('VERBOSE=1')
         MakeFileTarget = ''
         if '+parallel' in self.spec:
             MakeFileTarget += 'par'
@@ -156,13 +163,14 @@ class Cosmo(MakefilePackage):
             elif self.compiler.name == 'cce':
                 OptionsFileName += '.cray'
             OptionsFileName += '.' + spec.variants['cosmo_target'].value
-            optionsfilter = FileFilter('Options.lib.' + spec.variants['cosmo_target'].value)
+            optionsfilter = FileFilter(OptionsFileName)
             if self.spec.variants['slave'].value == 'tsa':
                 optionsfilter.filter('NETCDFI *=.*', 'NETCDFI = -I{0}/include'.format(spec['netcdf-fortran'].prefix))
-                optionsfilter.filter('NETCDFL *=.*', 'NETCDFL = -L{0}/lib -lnetcdff -L{1}/lib -lnetcdf'.format(spec['netcdf-fortran'].prefix, spec['netcdf-c'].prefix))
+                optionsfilter.filter('NETCDFL *=.*', 'NETCDFL = -L{0}/lib -lnetcdff -L{1}/lib64 -lnetcdf'.format(spec['netcdf-fortran'].prefix, spec['netcdf-c'].prefix))
             else:
                 optionsfilter.filter('NETCDFI *=.*', 'NETCDFI = -I$(NETCDF_DIR)/include')
                 optionsfilter.filter('NETCDFL *=.*', 'NETCDFL = -L$(NETCDF_DIR)/lib -lnetcdff -lnetcdf')
+            optionsfilter = FileFilter('Options.lib.' + spec.variants['cosmo_target'].value)
             if '+eccodes' in spec:
               optionsfilter.filter('GRIBAPIL *=.*', 'GRIBAPIL = -L$(GRIBAPI_DIR)/lib -leccodes_f90 -leccodes -L$(JASPER_DIR)/lib -ljasper')
             makefile.filter('/Options.*', '/' + OptionsFileName)
@@ -195,6 +203,8 @@ class Cosmo(MakefilePackage):
                     env['TARGET'] = 'GPU'
                 else:
                     env['TARGET'] = 'CPU'
+                if self.spec.variants['real_type'].value == 'float':
+                    env['REAL_TYPE'] = 'FLOAT'
                 if '~cppdycore' in self.spec:
                     env['JENKINS_NO_DYCORE'] = 'ON'
                 run_testsuite = Executable('sbatch submit.' + self.spec.variants['slave'].value + '.slurm')
