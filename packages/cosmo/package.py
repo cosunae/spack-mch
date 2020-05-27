@@ -40,7 +40,9 @@ class Cosmo(MakefilePackage):
     depends_on('cosmo-dycore%gcc real_type=float', when='real_type=float +cppdycore')
     depends_on('cosmo-dycore%gcc real_type=double', when='real_type=double +cppdycore')
     depends_on('cosmo-dycore%gcc +production', when='+production +cppdycore')
-    depends_on('cosmo-dycore@5.07.mch1.0.p6%gcc +production real_type=float', when='@5.07.mch1.0.p6')
+    depends_on('cosmo-dycore@5.07.mch1.0.p6%gcc +production real_type=float', when='@5.07.mch1.0.p6 real_type=float')
+    depends_on('cosmo-dycore@5.07.mch1.0.p6%gcc +production real_type=double', when='@5.07.mch1.0.p6 real_type=double')
+
 
     depends_on('serialbox@2.6.0', when='+serialize')
     depends_on('mpi', type=('build', 'run'))
