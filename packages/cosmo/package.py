@@ -17,6 +17,7 @@ class Cosmo(MakefilePackage):
 
     version('master', branch='master')
     version('mch', git='git@github.com:MeteoSwiss-APN/cosmo.git', branch='mch')
+    version('5.07.mch1.0.p6', git='git@github.com:MeteoSwiss-APN/cosmo.git', tag='5.07.mch1.0.p6')
     version('5.07.mch1.0.p5', git='git@github.com:MeteoSwiss-APN/cosmo.git', tag='5.07.mch1.0.p5')
     version('5.07.mch1.0.p4', git='git@github.com:MeteoSwiss-APN/cosmo.git', tag='5.07.mch1.0.p4')
     version('5.07.mch1.0.p3', git='git@github.com:MeteoSwiss-APN/cosmo.git', tag='5.07.mch1.0.p3')
@@ -39,6 +40,7 @@ class Cosmo(MakefilePackage):
     depends_on('cosmo-dycore%gcc real_type=float', when='real_type=float +cppdycore')
     depends_on('cosmo-dycore%gcc real_type=double', when='real_type=double +cppdycore')
     depends_on('cosmo-dycore%gcc +production', when='+production +cppdycore')
+    depends_on('cosmo-dycore@5.07.mch1.0.p6%gcc +production real_type=float', when='@5.07.mch1.0.p6')
 
     depends_on('serialbox@2.6.0', when='+serialize')
     depends_on('mpi', type=('build', 'run'))

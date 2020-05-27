@@ -33,6 +33,7 @@ class CosmoDycore(CMakePackage):
     maintainers = ['elsagermann']
     
     version('master', branch='master')
+    version('5.07.mch1.0.p6', git='git@github.com:MeteoSwiss-APN/cosmo.git', tag='5.07.mch1.0.p6')
     
     variant('build_type', default='Release', description='Build type', values=('Debug', 'Release', 'DebugRelease'))
     variant('build_tests', default=True, description="Compile Dycore unittests & regressiontests")
