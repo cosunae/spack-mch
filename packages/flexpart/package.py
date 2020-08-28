@@ -11,10 +11,10 @@ class Flexpart(MakefilePackage):
     """COSMO: Numerical Weather Prediction Model. Needs access to private GitHub."""
 
     homepage = ""
-    git      = 'git@github.com:C2SM-RCM/flexpart.git'
+    git      = 'git@github.com:cosunae/flexpart.git'
     maintainers = ['cosunae']
 
-    version('cosmo1-e', branch='empa-prerel')
+    version('cosmo1-e', branch='empa-prerel-aws')
     
     depends_on('netcdf-fortran~mpi')
     depends_on('netcdf-c~mpi')
