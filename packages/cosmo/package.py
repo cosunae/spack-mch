@@ -174,7 +174,8 @@ class Cosmo(MakefilePackage):
             if '+eccodes' in spec:
               optionsfilter.filter('GRIBAPIL *=.*', 'GRIBAPIL = -L$(GRIBAPI_DIR)/lib -leccodes_f90 -leccodes -L$(JASPER_DIR)/lib -ljasper')
             makefile.filter('/Options.*', '/' + OptionsFileName)
-            makefile.filter('@FCLOUDRUPTION','FCLOUDRUPTION = '.format(spec['fcloudruption'].prefix))
+            makefile.filter('FCLOUDRUPTION *:=.*','FCLOUDRUPTION := {0}'.format(spec['fcloudruption'].prefix))
+            makefile.filter('^CLOUDRUPTION *:=.*','CLOUDRUPTION := {0}'.format(spec['cloudruption'].prefix))
             if '~serialize' in spec:
               makefile.filter('TARGET     :=.*', 'TARGET     := {0}'.format('cosmo_'+ spec.variants['cosmo_target'].value))
 
