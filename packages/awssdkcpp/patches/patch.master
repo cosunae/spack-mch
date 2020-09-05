@@ -1,0 +1,20 @@
+diff --git a/cmake/AWSSDKConfig.cmake b/cmake/AWSSDKConfig.cmake
+index 610d7bc94a..8e067a9dda 100644
+--- a/cmake/AWSSDKConfig.cmake
++++ b/cmake/AWSSDKConfig.cmake
+@@ -287,6 +287,14 @@ if (AWSSDK_FIND_COMPONENTS)
+ 
+     set(AWSSDK_TARGETS ${AWSSDK_LINK_LIBRARIES})
+     list(REVERSE AWSSDK_TARGETS)
++    list(APPEND CMAKE_PREFIX_PATH "${AWSSDK_CMAKE_DIR}/../aws-c-event-stream/cmake/")
++    list(APPEND CMAKE_PREFIX_PATH "${AWSSDK_CMAKE_DIR}/../aws-c-common/cmake/")
++    list(APPEND CMAKE_PREFIX_PATH "${AWSSDK_CMAKE_DIR}/../aws-checksums/cmake/")
++
++    foreach(TARGET IN LISTS AWSSDK_TARGETS)
++        list(APPEND CMAKE_PREFIX_PATH ${AWSSDK_CMAKE_DIR}/${TARGET})
++    endforeach()
++
+     foreach(TARGET IN LISTS AWSSDK_TARGETS)
+         message(STATUS "Try finding ${TARGET}")
+         find_package(${TARGET} REQUIRED)
+
