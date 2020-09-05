@@ -26,6 +26,7 @@ class Cloudruption(CMakePackage):
 
     depends_on('mpi')
     depends_on('eccodes')
+    depends_on('awssdkcpp')
 
     # Can be built with Python2 or Python3.
 #    depends_on('python@3.6:', type='build')
@@ -36,5 +37,6 @@ class Cloudruption(CMakePackage):
 
     def cmake_args(self):
         args = ['-DENABLE_PRODUCER=ON' ]
+        args.append('-DENABLE_AWSSDK=ON')
 
         return args
