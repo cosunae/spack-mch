@@ -14,8 +14,17 @@ class Dusk(PythonPackage):
     git      = 'https://github.com/dawn-ico/dusk'
     maintainers = ['BenWeber42']
 
-    version('master', branch='master')
+    # development version for phase _dusk horizon_
     version('horizon', branch='horizon', preferred=True)
+
+    # correct version for the `icondusk-e2e` component
+    # dusk's `icondusk-e2e` branch must always be at or behind `horizon`
+    # they must not ever diverge!
+    version('icondusk-e2e', branch='icondusk-e2e')
+
+    # old version before _dusk horizon_
+    # (put on hold until _dusk horizon_ is over)
+    version('master', branch='master')
 
     extends('python@3.8.0:3.8.999')
 
