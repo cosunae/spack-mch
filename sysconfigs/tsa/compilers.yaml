@@ -32,6 +32,7 @@ compilers::
     extra_rpaths: []
     flags: {}
     modules: 
+    - PrgEnv-gnu
     - gcc/8.3.0
     operating_system: rhel7
     paths:
